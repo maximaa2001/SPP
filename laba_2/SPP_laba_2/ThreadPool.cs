@@ -48,17 +48,20 @@ namespace SPP_laba_2
         {
             while (true)
             {
+                TaskDelegate task = null;
+                CopyFileInfo info = null;
                 lock (this)
                 {
                     if (tasks.Count != 0)
                     {
-                        CopyFileInfo info = filesInfo.Dequeue();
-                        TaskDelegate task = tasks.Peek();
-                        task(info.from, info.to);
+                        info = filesInfo.Dequeue();
+                        task = tasks.Dequeue();
                         count++;
-                        tasks.Dequeue();
-                        Thread.Sleep(1);
                     }
+                }
+                if(task != null && info != null)
+                {
+                    task(info.from, info.to);
                 }
             }
         }

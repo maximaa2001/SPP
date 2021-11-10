@@ -28,9 +28,11 @@ namespace SPP_laba_2
             if (Directory.Exists(source_path) && Directory.Exists(aim_path))
             {
                 threadPool = new ThreadPool(10);
-                string[] files = Directory.GetFiles(source_path);
+                List<string> list = new List<string>();
+                recursia(list, source_path);
 
-                foreach (string file in files)
+
+                foreach (string file in list)
                 {
                     threadPool.EnqueueTask(copyFile, new CopyFileInfo(file, aim_path));
                 }
@@ -40,7 +42,7 @@ namespace SPP_laba_2
                 Console.WriteLine("Неверно введены каталоги");
             }
 
-            while(threadPool.getTasks() != 0)
+            while (threadPool.getTasks() != 0)
             {
 
             }
@@ -50,10 +52,25 @@ namespace SPP_laba_2
             Console.ReadLine();
         }
 
+        public static void recursia(List<string> list, string path)
+        {
+            string[] files = Directory.GetFiles(path);
+            foreach(string file in files)
+            {
+                list.Add(file);
+            }
+            string[] dirs = Directory.GetDirectories(path);
+            foreach(string dir in dirs)
+            {
+                recursia(list, dir);
+            }
+        }
+
         public static void copyFile(string from, string to)
         {
             File.Copy(from, to, true);
-            Console.WriteLine(Thread.CurrentThread.Name); 
+            //   Console.WriteLine(Thread.CurrentThread.Name); 
+            Thread.Sleep(1);
         }
     }
 }
